@@ -16,7 +16,7 @@
 
 function EvA_extractMorphology()
 
-  version = '2013-03-14';
+  version = '2017-09-25';
 
   %%% Set up the windows 
   data.img = [];
@@ -270,7 +270,7 @@ function EvA_extractMorphology()
 			      'Johannes Hjorth, Julia Dawitz, Rhiannon Meredith 2010', ...
 			      'HorizontalAlignment', 'right', ...
 			      'Foregroundcolor', 0.7*[1 1 1], ...
-			      'Backgroundcolor', 0.8*[1 1 1], ...
+			      'Backgroundcolor', get(gcf,'color'), ...
 			      'Position', [815 5 310 15], ...
 			      'Fontsize',8);
 
@@ -408,7 +408,7 @@ set([handles.fig, handles.plotLeft, handles.hist, handles.plotRight, ...
   function showPhoto()
 
     urlRoot = 'http://www.johanneshjorth.se/files/EvA/';
-    nPics = 76;
+    nPics = 1;
 
     % Matlabs random number generator gave the same number each time the first time
     % the program is run, so we also use the clock to get randomization.
@@ -596,8 +596,7 @@ set([handles.fig, handles.plotLeft, handles.hist, handles.plotRight, ...
     set(handles.detectEdges,'String','Detect edges');
 
     % Turn button green to indicate that it is safe to pres
-    % set(handles.detectEdges, 'BackgroundColor', [1 1 1]*0.702)
-    set(handles.detectEdges, 'BackgroundColor', [0 0.7 0])
+    set(handles.detectEdges, 'BackgroundColor', get(gcf,'color'))
 
   end 
 
