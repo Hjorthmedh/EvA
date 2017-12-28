@@ -964,8 +964,8 @@ function EvA_analyse()
     columnName{end+1} = 'Mean participation (clustered)';
     columnName{end+1} = 'SEM participation (clustered)';
 
-    columnName{end+1} = 'Mean event amp (cluster events)'
-    columnName{end+1} = 'SEM event amp (cluster events)'
+    columnName{end+1} = 'Mean event amp (cluster events)';
+    columnName{end+1} = 'SEM event amp (cluster events)';
 
     columnName{end+1} = 'Mean event amp (active)'; % non-special
     columnName{end+1} = 'SEM event amp (active)';
@@ -1058,6 +1058,8 @@ function EvA_analyse()
     columnData{end+1} = tmpSliceNumber;
     columnData{end+1} = tmpTotalSlices;
 
+
+    columnData = fixColumnData(columnData);
     makeXMLsheet(docNode,'Summary', ...
 		 columnName, columnData);
 
@@ -1077,6 +1079,7 @@ function EvA_analyse()
 
     end
 
+    columnData = fixColumnData(columnData);
     makeXMLsheet(docNode,'Trace files', ...
 		 columnName, columnData);
 
@@ -1084,6 +1087,7 @@ function EvA_analyse()
 
     [columnName,columnData] = exportNeuronDetailsNormal('eventFreq');
 
+    columnData = fixColumnData(columnData);
     makeXMLsheet(docNode,'Neuron frequency (normal)', ...
 		 columnName, columnData);
 
@@ -1092,6 +1096,7 @@ function EvA_analyse()
 
     [columnName,columnData] = exportNeuronDetailsClustered('eventFreq');
 
+    columnData = fixColumnData(columnData);
     makeXMLsheet(docNode,'Neuron frequency (clustered)', ...
 		 columnName, columnData);
 
@@ -1100,6 +1105,7 @@ function EvA_analyse()
 
     [columnName,columnData] = exportNeuronDetailsClustered('neuronParticipation');
 
+    columnData = fixColumnData(columnData);
     makeXMLsheet(docNode,'Neuron participations (clustered)', ...
 		 columnName, columnData);
 
@@ -1114,10 +1120,11 @@ function EvA_analyse()
       if(~isempty(data(i).neuronClusters))
         columnData{i} = data(i).neuronClusters{1};
       else
-        columnData{i} = [];
+        columnData{i} = '';
       end
     end
 
+    columnData = fixColumnData(columnData);
     makeXMLsheet(docNode,'Id of clustered neurons', ...
 		 columnName, columnData);
 
@@ -1126,10 +1133,30 @@ function EvA_analyse()
     % Write all to disk
 
     fprintf('Exporting data to %s\n',exportInfo.exportXMLfile);
+
     xmlwrite(exportInfo.exportXMLfile,docNode);
 
   end
 
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  function columnData = fixColumnData(columnData)
+
+    for ic = 1:numel(columnData)
+      if(isempty(columnData{ic}))
+	disp('Fixed one empty array')
+	columnData{ic} = ''
+      end
+
+      if(iscell(columnData{ic}))
+	if(numel(columnData{ic}) == 1 && isempty(columnData{ic}{1}))
+	  disp('Fixing cell array with empty array')
+	  columnData{ic} = '';
+        end
+      end
+    end
+  end
+   
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   function docNode = makeXMLheader()
